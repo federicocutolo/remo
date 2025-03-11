@@ -15,7 +15,7 @@ def plot_residuals(sample):
     plt.grid(linestyle = ':', linewidth = 0.8)
     plt.xlabel(r'$iter$')
     plt.ylabel(r'$E$')
-    labels = [r'res_1', 'res_2', 'res_3', 'res_4']
+    labels = ['res_1', 'res_2', 'res_3', 'res_4']
     plt.legend(labels, loc=1)
     plt.show()
 
