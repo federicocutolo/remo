@@ -1,6 +1,6 @@
 # README
 
-## Parallel Simulation Runner
+## Parallel Simulation Handler
 
 This script executes multiple simulations in parallel using a thermo-fluid dynamics solver and an electromagnetic solver. It manages simulation folders, handles restarts, monitors progress, and cleans up after execution.
 
