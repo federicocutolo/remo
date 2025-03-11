@@ -7,7 +7,7 @@ This script executes multiple simulations in parallel using a thermo-fluid dynam
 ### Requirements
 - Python 3
 - Required modules: `multiprocessing`, `subprocess`, `pandas`, `os`, `time`, `shutil`
-- Additional dependencies: `extract_qoi`, `copy_replace`, `check_termination`, `cleanup`, `restart_solution`
+- Additional (custom) dependencies: `extract_qoi`, `copy_replace`, `check_termination`, `cleanup`, `restart_solution`
 
 ### How It Works
 1. **Parallel Execution:** The script runs multiple simulations in parallel using multiprocessing.
