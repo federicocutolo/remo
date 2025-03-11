@@ -1,12 +1,12 @@
 import os
 
 def activate_restart(sample_folder):
-    log_file_path = os.path.join(sample_folder, 'output', 'hegel.log')
-    input_file_path = os.path.join(sample_folder, 'exec', 'input_hegel')
+    log_file_path = os.path.join(sample_folder, 'output', '$fluid_solver.log')
+    input_file_path = os.path.join(sample_folder, 'exec', 'input_$fluid_solver')
 
-    # If the hegel.log file exists the simulation did't converge, so activate restart flags
+    # If the $fluid_solver.log file exists the simulation did't converge, so activate restart flags
     if os.path.exists(log_file_path):
-        # Read the content of input_hegel
+        # Read the content of input_$fluid_solver
         with open(input_file_path, 'r') as file:
             lines = file.readlines()
         # Uncomment the specific lines
