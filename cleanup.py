@@ -3,10 +3,10 @@ import os
 
 def cleanup(sample_folder):
     
-    # Copy input files (hegel, plato)
-    input_hegel = sample_folder + 'exec/input_hegel'
-    input_plato = sample_folder + 'database/kinetics/air11_park01'
-    input_files = [input_hegel, input_plato]
+    # Copy input files ($fluid_solver, $chemical_library)
+    input_$fluid_solver = sample_folder + 'exec/input_$fluid_solver'
+    input_$chemical_library = sample_folder + 'database/kinetics/air11_park01'
+    input_files = [input_$fluid_solver, input_$chemical_library]
 
     for input_file in input_files:
         try:
@@ -17,7 +17,7 @@ def cleanup(sample_folder):
 
     # Remove everything but input files and outputs
     folders_list = ['database/', 'exec/', 'input/']
-    files_list = ['CFL_history.dat', 'flowfield_NS_NLTE.cgns', 'flux.log', 'hegel.log', 'mach_endian.dat']
+    files_list = ['CFL_history.dat', 'flowfield_NS_NLTE.cgns', '$electromagnetic_solver.log', '$fluid_solver.log', 'mach_endian.dat']
 
     for folder in folders_list:
         folder_path = sample_folder + folder
