@@ -19,11 +19,11 @@ def parallel_run(sample):
 
     # Check if sample folder exists
     if os.path.exists(sample_folder):
-        hegel_log_file = exe + '../output/hegel.log'
+        $fluid_solver_log_file = exe + '../output/$fluid_solver.log'
         
-        if os.path.isfile(hegel_log_file):
-            # hegel.log found, activate restart and run the sample
-            print("Sample folder exists and hegel.log found. Activating restart and running the sample.")
+        if os.path.isfile($fluid_solver_log_file):
+            # $fluid_solver.log found, activate restart and run the sample
+            print("Sample folder exists and $fluid_solver.log found. Activating restart and running the sample.")
             activate_restart(sample_folder)
             # 
             # Remove specified directories and files
@@ -43,8 +43,8 @@ def parallel_run(sample):
                     print(f"Removed file: {file_path}")
 
         else:
-            # hegel.log not found, sample is considered converged
-            print("Sample folder exists but hegel.log not found. Assuming sample is converged.")
+            # $fluid_solver.log not found, sample is considered converged
+            print("Sample folder exists but $fluid_solver.log not found. Assuming sample is converged.")
             return
     else:
         # Sample folder does not exist, create it and proceed
@@ -56,41 +56,41 @@ def parallel_run(sample):
         sample_dict = df.iloc[sample]
         copy_replace(sample_folder, sample_dict)
 
-    # Define commands for flux and hegel.
+    # Define commands for $electromagnetic_solver and $fluid_solver.
     row = df.iloc[sample]
-    hegel_command = 'hegel input_hegel 2>&1 | tee ../output/hegel.log'
-    flux_command = f'flux2D -m ../../../mesh/flux_farfield.mesh -p precice-config_efield.xml -cr 0.05 -cls 0.08382 -cle 0.367063 -o 1 -f 2.1e6 -pdt 0.00000001 -pr 100 -power {row["par_pow"]} -nc 3 -co_r 59.42e-3 -co_loc \'132.435e-3 166.435e-3 200.435e-3\'' #2>&1 | tee ../output/flux.log
+    $fluid_solver_command = '$fluid_solver input_$fluid_solver 2>&1 | tee ../output/$fluid_solver.log'
+    $electromagnetic_solver_command = f'$electromagnetic_solver2D -m ../../../mesh/$electromagnetic_solver_farfield.mesh -p precice-config_efield.xml 2>&1 | tee ../output/$electromagnetic_solver.log'
 
     try:
-        # Run flux + hegel
-        process_hegel = subprocess.Popen(hegel_command, cwd=exe, shell=True)
-        process_flux  = subprocess.Popen(flux_command, cwd=exe, shell=True)
+        # Run $electromagnetic_solver + $fluid_solver
+        process_$fluid_solver = subprocess.Popen($fluid_solver_command, cwd=exe, shell=True)
+        process_$electromagnetic_solver  = subprocess.Popen($electromagnetic_solver_command, cwd=exe, shell=True)
 
         while True:
             time.sleep(5)  # Check success/failure every 5 seconds
             
-            if check_log_for_termination(hegel_log_file):
-                print("Termination term found in hegel log.")
-                if check_log_for_errors(hegel_log_file):
-                    print("Errors found in hegel log. Terminating processes...")
-                    process_hegel.terminate()
-                    process_flux.terminate()
+            if check_log_for_termination($fluid_solver_log_file):
+                print("Termination term found in $fluid_solver log.")
+                if check_log_for_errors($fluid_solver_log_file):
+                    print("Errors found in $fluid_solver log. Terminating processes...")
+                    process_$fluid_solver.terminate()
+                    process_$electromagnetic_solver.terminate()
                     with open(failed_samples, 'a') as file:
                         file.write(f'{sample}\n')
                 else:
                     print("No errors found. Marking as successful and terminating processes...")
-                    process_hegel.terminate()
-                    process_flux.terminate()
+                    process_$fluid_solver.terminate()
+                    process_$electromagnetic_solver.terminate()
                     with open(successful_samples, 'a') as file:
                         file.write(f'{sample}\n')
 
                 break  # Exit the while loop after handling termination
 
-        return_code_hegel = process_hegel.wait()
-        return_code_flux = process_flux.wait()
+        return_code_$fluid_solver = process_$fluid_solver.wait()
+        return_code_$electromagnetic_solver = process_$electromagnetic_solver.wait()
     
-        print(f'hegel finished with return code {return_code_hegel}')
-        print(f'flux finished with return code {return_code_flux}')
+        print(f'$fluid_solver finished with return code {return_code_$fluid_solver}')
+        print(f'$electromagnetic_solver finished with return code {return_code_$electromagnetic_solver}')
 
     except subprocess.CalledProcessError as e:
         print(f'Error occurred: {e}')
